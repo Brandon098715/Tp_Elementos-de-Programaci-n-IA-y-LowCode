@@ -1,105 +1,331 @@
+import tkinter as tk
+from tkinter import messagebox
+
 from funciones import (
     cargar_gastos,
     guardar_gastos,
-    crear_gasto,
-    mostrar_gastos,
-    pedir_categoria,
-    pedir_mes,
-    filtrar_por_categoria,
-    filtrar_por_mes,
-    buscar_por_id,
-    pedir_id,
-    confirmar,
+    agregar_gasto,
     modificar_gasto,
-    mostrar_indicadores,
-    generar_grafico,
+    eliminar_gasto,
+    filtrar_por_categoria,
+    calcular_indicadores,
+    crear_grafico,
+    validar_fecha,
 )
 
+# Cargamos los datos al iniciar el programa.
+gastos = cargar_gastos()
 
-def mostrar_menu() -> None:
-    print("\n===== GASTOS PERSONALES =====")
-    print("1. Registrar gasto")
-    print("2. Listar gastos")
-    print("3. Filtrar por categoría")
-    print("4. Filtrar por mes (AAAA-MM)")
-    print("5. Modificar gasto")
-    print("6. Eliminar gasto")
-    print("7. Ver indicadores")
-    print("8. Generar gráfico por categoría")
-    print("9. Salir")
+# Esta lista guarda los gastos que se ven en pantalla.
+# Puede contener todos los gastos o solamente los filtrados.
+gastos_visibles = gastos.copy()
 
 
-def main() -> None:
-    gastos: list[dict] = cargar_gastos()
-    opcion: str = ""
+def actualizar_lista(lista: list) -> None:
+    """Muestra en pantalla los gastos recibidos."""
+    global gastos_visibles
 
-    while opcion != "9":
-        mostrar_menu()
-        opcion = input("Elegí una opción: ").strip()
+    gastos_visibles = lista
+    lista_gastos.delete(0, tk.END)
 
-        if opcion == "1":
-            print("\n--- Registrar gasto ---")
-            gasto: dict = crear_gasto(gastos)
-            gastos.append(gasto)
-            guardar_gastos(gastos)
-            print(f"Gasto registrado con id {gasto['id']} por ${gasto['monto']:,.2f}.")
+    for gasto in lista:
+        texto = (
+            f'{gasto["id"]} | {gasto["fecha"]} | {gasto["categoria"]} | '
+            f'{gasto["descripcion"]} | ${gasto["monto"]:.2f}'
+        )
+        lista_gastos.insert(tk.END, texto)
 
-        elif opcion == "2":
-            print("\n--- Listado de gastos ---")
-            mostrar_gastos(gastos)
-
-        elif opcion == "3":
-            print("\n--- Filtrar por categoría ---")
-            categoria: str = pedir_categoria()
-            mostrar_gastos(filtrar_por_categoria(gastos, categoria))
-
-        elif opcion == "4":
-            print("\n--- Filtrar por mes ---")
-            mes: str = pedir_mes()
-            mostrar_gastos(filtrar_por_mes(gastos, mes))
-
-        elif opcion == "5":
-            print("\n--- Modificar gasto ---")
-            if len(gastos) == 0:
-                print("No hay gastos para modificar.")
-            else:
-                id_gasto: int = pedir_id(gastos)
-                gasto_elegido: dict = buscar_por_id(gastos, id_gasto)
-                if modificar_gasto(gasto_elegido):
-                    guardar_gastos(gastos)
-                    print(f"Gasto {id_gasto} modificado y guardado.")
-                else:
-                    print("No se hicieron cambios.")
-
-        elif opcion == "6":
-            print("\n--- Eliminar gasto ---")
-            if len(gastos) == 0:
-                print("No hay gastos para eliminar.")
-            else:
-                id_gasto = pedir_id(gastos)
-                gasto_elegido = buscar_por_id(gastos, id_gasto)
-                mostrar_gastos([gasto_elegido])
-                if confirmar("¿Seguro que querés eliminar este gasto?"):
-                    gastos.remove(gasto_elegido)
-                    guardar_gastos(gastos)
-                    print(f"Gasto {id_gasto} eliminado.")
-                else:
-                    print("Eliminación cancelada.")
-
-        elif opcion == "7":
-            print("\n--- Indicadores ---")
-            mostrar_indicadores(gastos)
-
-        elif opcion == "8":
-            print("\n--- Gráfico por categoría ---")
-            generar_grafico(gastos)
-
-        elif opcion == "9":
-            print("¡Hasta luego!")
-
-        else:
-            print("Opción inválida. Elegí un número del 1 al 9.")
+    actualizar_indicadores()
 
 
-if __name__ == "__main__":
-    main()
+def actualizar_indicadores() -> None:
+    """Actualiza total, promedio y gasto mayor."""
+    total, promedio, mayor = calcular_indicadores(gastos)
+
+    etiqueta_total.config(text=f"Total gastado: ${total:.2f}")
+    etiqueta_promedio.config(text=f"Promedio: ${promedio:.2f}")
+    etiqueta_mayor.config(text=f"Gasto mayor: ${mayor:.2f}")
+
+
+def limpiar_campos() -> None:
+    """Vacía los campos del formulario."""
+    entrada_fecha.delete(0, tk.END)
+    entrada_descripcion.delete(0, tk.END)
+    entrada_monto.delete(0, tk.END)
+    categoria.set("Comida")
+
+
+def obtener_datos_formulario() -> tuple:
+    """Lee y valida los datos escritos por el usuario."""
+    fecha = entrada_fecha.get().strip()
+    categoria_elegida = categoria.get()
+    descripcion = entrada_descripcion.get().strip()
+    monto_texto = entrada_monto.get().strip()
+
+    if fecha == "" or descripcion == "" or monto_texto == "":
+        raise ValueError("Todos los campos son obligatorios.")
+
+    if not validar_fecha(fecha):
+        raise ValueError("La fecha debe tener formato AAAA-MM-DD.")
+
+    try:
+        monto = float(monto_texto)
+    except ValueError:
+        raise ValueError("El monto debe ser un número.")
+
+    if monto <= 0:
+        raise ValueError("El monto debe ser mayor que cero.")
+
+    return fecha, categoria_elegida, descripcion, monto
+
+
+def guardar_nuevo_gasto() -> None:
+    """Agrega un gasto nuevo a la lista y al archivo JSON."""
+    try:
+        fecha, categoria_elegida, descripcion, monto = obtener_datos_formulario()
+    except ValueError as error:
+        messagebox.showerror("Error", str(error))
+        return
+
+    agregar_gasto(gastos, fecha, categoria_elegida, descripcion, monto)
+    guardar_gastos(gastos)
+
+    actualizar_lista(gastos)
+    limpiar_campos()
+    messagebox.showinfo("Listo", "El gasto fue agregado.")
+
+
+def cargar_seleccionado() -> None:
+    """Carga en el formulario el gasto seleccionado."""
+    seleccion = lista_gastos.curselection()
+
+    if len(seleccion) == 0:
+        messagebox.showwarning("Atención", "Primero seleccioná un gasto.")
+        return
+
+    posicion = seleccion[0]
+    gasto = gastos_visibles[posicion]
+
+    entrada_fecha.delete(0, tk.END)
+    entrada_fecha.insert(0, gasto["fecha"])
+
+    categoria.set(gasto["categoria"])
+
+    entrada_descripcion.delete(0, tk.END)
+    entrada_descripcion.insert(0, gasto["descripcion"])
+
+    entrada_monto.delete(0, tk.END)
+    entrada_monto.insert(0, str(gasto["monto"]))
+
+
+def guardar_modificacion() -> None:
+    """Modifica el gasto seleccionado usando los datos del formulario."""
+    seleccion = lista_gastos.curselection()
+
+    if len(seleccion) == 0:
+        messagebox.showwarning("Atención", "Primero seleccioná un gasto.")
+        return
+
+    posicion = seleccion[0]
+    id_gasto = gastos_visibles[posicion]["id"]
+
+    try:
+        fecha, categoria_elegida, descripcion, monto = obtener_datos_formulario()
+    except ValueError as error:
+        messagebox.showerror("Error", str(error))
+        return
+
+    modificar_gasto(
+        gastos,
+        id_gasto,
+        fecha,
+        categoria_elegida,
+        descripcion,
+        monto,
+    )
+    guardar_gastos(gastos)
+
+    actualizar_lista(gastos)
+    limpiar_campos()
+    messagebox.showinfo("Listo", "El gasto fue modificado.")
+
+
+def borrar_seleccionado() -> None:
+    """Elimina el gasto seleccionado."""
+    seleccion = lista_gastos.curselection()
+
+    if len(seleccion) == 0:
+        messagebox.showwarning("Atención", "Primero seleccioná un gasto.")
+        return
+
+    posicion = seleccion[0]
+    id_gasto = gastos_visibles[posicion]["id"]
+
+    confirmar = messagebox.askyesno(
+        "Confirmar",
+        "¿Querés eliminar el gasto seleccionado?",
+    )
+
+    if confirmar:
+        eliminar_gasto(gastos, id_gasto)
+        guardar_gastos(gastos)
+        actualizar_lista(gastos)
+        limpiar_campos()
+
+
+def aplicar_filtro() -> None:
+    """Filtra los gastos por categoría."""
+    categoria_buscada = filtro_categoria.get()
+
+    if categoria_buscada == "Todas":
+        actualizar_lista(gastos)
+    else:
+        resultado = filtrar_por_categoria(gastos, categoria_buscada)
+        actualizar_lista(resultado)
+
+
+def mostrar_todos() -> None:
+    """Quita el filtro y vuelve a mostrar todos los gastos."""
+    filtro_categoria.set("Todas")
+    actualizar_lista(gastos)
+
+
+def ver_grafico() -> None:
+    """Genera y muestra el gráfico de gastos por categoría."""
+    if len(gastos) == 0:
+        messagebox.showwarning("Atención", "No hay gastos para graficar.")
+        return
+
+    crear_grafico(gastos)
+
+
+# -------------------------
+# INTERFAZ GRÁFICA
+# -------------------------
+
+ventana = tk.Tk()
+ventana.title("Control de gastos personales")
+ventana.geometry("850x620")
+
+titulo = tk.Label(
+    ventana,
+    text="CONTROL DE GASTOS PERSONALES",
+    font=("Arial", 16, "bold"),
+)
+titulo.grid(row=0, column=0, columnspan=4, pady=15)
+
+# Formulario
+tk.Label(ventana, text="Fecha (AAAA-MM-DD):").grid(
+    row=1, column=0, padx=5, pady=5, sticky="e"
+)
+entrada_fecha = tk.Entry(ventana, width=20)
+entrada_fecha.grid(row=1, column=1, padx=5, pady=5)
+
+tk.Label(ventana, text="Categoría:").grid(
+    row=1, column=2, padx=5, pady=5, sticky="e"
+)
+categoria = tk.StringVar(value="Comida")
+opciones_categoria = ["Comida", "Transporte", "Servicios", "Ocio", "Otros"]
+menu_categoria = tk.OptionMenu(ventana, categoria, *opciones_categoria)
+menu_categoria.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+
+tk.Label(ventana, text="Descripción:").grid(
+    row=2, column=0, padx=5, pady=5, sticky="e"
+)
+entrada_descripcion = tk.Entry(ventana, width=30)
+entrada_descripcion.grid(row=2, column=1, padx=5, pady=5)
+
+tk.Label(ventana, text="Monto:").grid(
+    row=2, column=2, padx=5, pady=5, sticky="e"
+)
+entrada_monto = tk.Entry(ventana, width=20)
+entrada_monto.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+
+boton_agregar = tk.Button(
+    ventana,
+    text="Agregar gasto",
+    width=18,
+    command=guardar_nuevo_gasto,
+)
+boton_agregar.grid(row=3, column=0, padx=5, pady=10)
+
+boton_cargar = tk.Button(
+    ventana,
+    text="Cargar seleccionado",
+    width=18,
+    command=cargar_seleccionado,
+)
+boton_cargar.grid(row=3, column=1, padx=5, pady=10)
+
+boton_modificar = tk.Button(
+    ventana,
+    text="Modificar",
+    width=18,
+    command=guardar_modificacion,
+)
+boton_modificar.grid(row=3, column=2, padx=5, pady=10)
+
+boton_eliminar = tk.Button(
+    ventana,
+    text="Eliminar",
+    width=18,
+    command=borrar_seleccionado,
+)
+boton_eliminar.grid(row=3, column=3, padx=5, pady=10)
+
+# Lista de gastos
+tk.Label(ventana, text="Gastos registrados:").grid(
+    row=4, column=0, columnspan=4, pady=(10, 5)
+)
+
+lista_gastos = tk.Listbox(ventana, width=105, height=14)
+lista_gastos.grid(row=5, column=0, columnspan=4, padx=15, pady=5)
+
+# Filtros
+tk.Label(ventana, text="Filtrar por categoría:").grid(
+    row=6, column=0, padx=5, pady=10, sticky="e"
+)
+
+filtro_categoria = tk.StringVar(value="Todas")
+opciones_filtro = ["Todas"] + opciones_categoria
+menu_filtro = tk.OptionMenu(ventana, filtro_categoria, *opciones_filtro)
+menu_filtro.grid(row=6, column=1, padx=5, pady=10)
+
+boton_filtrar = tk.Button(
+    ventana,
+    text="Filtrar",
+    width=15,
+    command=aplicar_filtro,
+)
+boton_filtrar.grid(row=6, column=2, padx=5, pady=10)
+
+boton_todos = tk.Button(
+    ventana,
+    text="Mostrar todos",
+    width=15,
+    command=mostrar_todos,
+)
+boton_todos.grid(row=6, column=3, padx=5, pady=10)
+
+# Indicadores
+etiqueta_total = tk.Label(ventana, text="Total gastado: $0")
+etiqueta_total.grid(row=7, column=0, padx=5, pady=10)
+
+etiqueta_promedio = tk.Label(ventana, text="Promedio: $0")
+etiqueta_promedio.grid(row=7, column=1, padx=5, pady=10)
+
+etiqueta_mayor = tk.Label(ventana, text="Gasto mayor: $0")
+etiqueta_mayor.grid(row=7, column=2, padx=5, pady=10)
+
+boton_grafico = tk.Button(
+    ventana,
+    text="Ver gráfico",
+    width=15,
+    command=ver_grafico,
+)
+boton_grafico.grid(row=7, column=3, padx=5, pady=10)
+
+# Mostramos los gastos al abrir la aplicación.
+actualizar_lista(gastos)
+
+ventana.mainloop()

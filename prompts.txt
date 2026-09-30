@@ -1,0 +1,56 @@
+REGISTRO DE USO DE INTELIGENCIA ARTIFICIAL
+=============================================
+
+PROMPT 1
+--------
+"¿Qué sería notebook?"
+
+Resumen de la respuesta de IA:
+Se explicó que un notebook de Jupyter es un archivo .ipynb dividido en celdas, donde se puede combinar código Python, resultados, tablas, gráficos y texto.
+
+Decisión:
+ACEPTADA.
+Se mantuvo analisis.ipynb para realizar una exploración sencilla de datos con pandas y Matplotlib.
+
+
+PROMPT 2
+--------
+"Necesito generar una interfaz para esa aplicación. El tema es que tengo que usar la misma metodología, usar el código más básico posible porque luego tengo que explicar el código y no soy programador."
+
+Resumen de la respuesta de IA:
+Se propuso usar Tkinter y mantener dos módulos principales: main.py para la interfaz y funciones.py para la lógica. También se recomendó evitar clases, bases de datos y frameworks más complejos.
+
+Decisión:
+ACEPTADA CON MODIFICACIONES.
+Se utilizó Tkinter y una estructura sencilla. Se mantuvieron únicamente las funciones necesarias para cumplir la consigna.
+
+
+PROMPT 3
+--------
+"Armame todo, pero usando los recursos de código mínimos y lo más básico posible."
+
+Resumen de la respuesta de IA:
+Se preparó una versión completa con interfaz gráfica, persistencia JSON, validaciones, filtros, tres indicadores, pandas, Matplotlib, notebook, README y registro de prompts.
+
+Decisión:
+ACEPTADA.
+Se revisó que cada parte del código pudiera explicarse usando conceptos básicos vistos en la materia.
+
+
+CÓMO SE COMPROBÓ EL FUNCIONAMIENTO
+==================================
+
+Se probaron las funciones principales de manera independiente:
+
+1. Lectura de datos desde JSON.
+2. Alta de un gasto.
+3. Modificación de un gasto.
+4. Eliminación de un gasto.
+5. Filtro por categoría.
+6. Cálculo de total, promedio y gasto mayor.
+7. Generación del gráfico.
+
+También se verificó que los archivos .py no tuvieran errores de sintaxis.
+
+La interfaz fue diseñada con controles básicos de Tkinter:
+Label, Entry, OptionMenu, Button y Listbox.
