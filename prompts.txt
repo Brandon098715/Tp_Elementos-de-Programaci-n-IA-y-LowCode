@@ -1,67 +1,71 @@
 REGISTRO DE USO DE INTELIGENCIA ARTIFICIAL
 =============================================
 
+Se seleccionaron tres prompts relevantes del proceso de desarrollo.
+Los textos indicados como "extracto" conservan el sentido del pedido original
+y omiten partes de la conversación que no son necesarias para documentar el TP.
+
 PROMPT 1
 ========
 
-Prompt enviado:
-"¿Qué sería notebook?"
+Prompt relevante (extracto):
+"Necesito generar una interfaz para esa aplicación, usando la misma metodología
+y el código más básico posible porque luego tengo que explicar el código."
 
 Respuesta de IA:
-Se explicó que un notebook de Jupyter es un archivo .ipynb dividido en celdas.
-En esas celdas se puede escribir código Python, ver resultados, mostrar tablas,
-crear gráficos y agregar texto explicativo.
-
-Decisión tomada:
-ACEPTADA.
-
-Justificación:
-Se mantuvo analisis.ipynb para realizar un análisis sencillo de los datos
-con pandas y Matplotlib, tal como sugiere la consigna.
-
-
-PROMPT 2
-========
-
-Prompt enviado:
-"Necesito generar una interfaz para esa aplicación. El tema es que tengo que
-usar la misma metodología, usar el código más básico posible porque luego
-tengo que explicar el código y no soy programador."
-
-Respuesta de IA:
-Se propuso utilizar Tkinter porque forma parte de Python y permite crear una
-interfaz gráfica sin agregar un framework web. También se recomendó mantener
-el código basado en funciones, listas, diccionarios, condiciones y ciclos,
-evitando clases, bases de datos y estructuras innecesariamente complejas.
+Se propuso utilizar Tkinter para construir una interfaz gráfica sencilla y
+mantener la solución basada en conceptos básicos de Python: funciones, listas,
+diccionarios, condiciones y estructuras repetitivas.
 
 Decisión tomada:
 ACEPTADA CON MODIFICACIONES.
 
 Justificación:
-Se utilizó Tkinter, pero además se separó el proyecto en módulos pequeños
-para que cada archivo tenga una responsabilidad fácil de explicar.
+Se eligió Tkinter y se mantuvo una implementación sencilla. Más adelante se
+reorganizó el código en módulos para que cada archivo tuviera una
+responsabilidad concreta.
 
 
-PROMPT 3
+PROMPT 2
 ========
 
-Prompt enviado:
-"Necesito que revises si hay cosas para refactorizar. No quiero .py que tengan
-un montón de código cuando se podría dividir responsabilidades. Necesito dejar
-impecable el código y con sus respectivos comentarios."
+Prompt relevante (extracto):
+"Necesito que hagas una revisión del proyecto completo para que cumpla las
+pautas indicadas por el profesor. Revisá si hay cosas para refactorizar; no
+quiero archivos .py con muchas responsabilidades cuando se pueden dividir."
 
 Respuesta de IA:
-Se recomendó separar el acceso a datos, la lógica, los gráficos y la interfaz
-en archivos distintos. También se propuso dejar main.py solamente como punto
-de entrada, agregar pruebas simples y mejorar los comentarios para explicar
-las decisiones importantes sin comentar cada línea.
+Se revisó la estructura del proyecto y se propuso separar el acceso a datos,
+la lógica de la aplicación, los gráficos, la interfaz y las pruebas. También
+se recomendó dejar main.py solamente como punto de entrada.
 
 Decisión tomada:
 ACEPTADA.
 
 Justificación:
-Se crearon datos.py, funciones.py, graficos.py, acciones.py, interfaz.py y pruebas.py.
-De esta forma cada módulo puede explicarse con una sola responsabilidad.
+Se dividió el proyecto en módulos pequeños y con responsabilidades claras,
+manteniendo una implementación basada en funciones y evitando complejidad
+innecesaria.
+
+
+PROMPT 3
+========
+
+Prompt relevante (extracto):
+"Aplicá todas estas mejoras para que el TP quede prolijo y cumpla la consigna,
+y prepará la versión final del proyecto."
+
+Respuesta de IA:
+Se generó una versión refactorizada con módulos separados, comentarios en las
+partes importantes, pruebas simples, documentación del proyecto, persistencia
+JSON, análisis con pandas y visualización con Matplotlib.
+
+Decisión tomada:
+ACEPTADA.
+
+Justificación:
+La versión final mantiene las funcionalidades requeridas y organiza el código
+de manera que cada parte pueda identificarse y explicarse por separado.
 
 
 CÓMO SE COMPROBÓ EL FUNCIONAMIENTO
