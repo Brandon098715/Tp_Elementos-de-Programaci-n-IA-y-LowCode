@@ -2,55 +2,83 @@ REGISTRO DE USO DE INTELIGENCIA ARTIFICIAL
 =============================================
 
 PROMPT 1
---------
+========
+
+Prompt enviado:
 "¿Qué sería notebook?"
 
-Resumen de la respuesta de IA:
-Se explicó que un notebook de Jupyter es un archivo .ipynb dividido en celdas, donde se puede combinar código Python, resultados, tablas, gráficos y texto.
+Respuesta de IA:
+Se explicó que un notebook de Jupyter es un archivo .ipynb dividido en celdas.
+En esas celdas se puede escribir código Python, ver resultados, mostrar tablas,
+crear gráficos y agregar texto explicativo.
 
-Decisión:
+Decisión tomada:
 ACEPTADA.
-Se mantuvo analisis.ipynb para realizar una exploración sencilla de datos con pandas y Matplotlib.
+
+Justificación:
+Se mantuvo analisis.ipynb para realizar un análisis sencillo de los datos
+con pandas y Matplotlib, tal como sugiere la consigna.
 
 
 PROMPT 2
---------
-"Necesito generar una interfaz para esa aplicación. El tema es que tengo que usar la misma metodología, usar el código más básico posible porque luego tengo que explicar el código y no soy programador."
+========
 
-Resumen de la respuesta de IA:
-Se propuso usar Tkinter y mantener dos módulos principales: main.py para la interfaz y funciones.py para la lógica. También se recomendó evitar clases, bases de datos y frameworks más complejos.
+Prompt enviado:
+"Necesito generar una interfaz para esa aplicación. El tema es que tengo que
+usar la misma metodología, usar el código más básico posible porque luego
+tengo que explicar el código y no soy programador."
 
-Decisión:
+Respuesta de IA:
+Se propuso utilizar Tkinter porque forma parte de Python y permite crear una
+interfaz gráfica sin agregar un framework web. También se recomendó mantener
+el código basado en funciones, listas, diccionarios, condiciones y ciclos,
+evitando clases, bases de datos y estructuras innecesariamente complejas.
+
+Decisión tomada:
 ACEPTADA CON MODIFICACIONES.
-Se utilizó Tkinter y una estructura sencilla. Se mantuvieron únicamente las funciones necesarias para cumplir la consigna.
+
+Justificación:
+Se utilizó Tkinter, pero además se separó el proyecto en módulos pequeños
+para que cada archivo tenga una responsabilidad fácil de explicar.
 
 
 PROMPT 3
---------
-"Armame todo, pero usando los recursos de código mínimos y lo más básico posible."
+========
 
-Resumen de la respuesta de IA:
-Se preparó una versión completa con interfaz gráfica, persistencia JSON, validaciones, filtros, tres indicadores, pandas, Matplotlib, notebook, README y registro de prompts.
+Prompt enviado:
+"Necesito que revises si hay cosas para refactorizar. No quiero .py que tengan
+un montón de código cuando se podría dividir responsabilidades. Necesito dejar
+impecable el código y con sus respectivos comentarios."
 
-Decisión:
+Respuesta de IA:
+Se recomendó separar el acceso a datos, la lógica, los gráficos y la interfaz
+en archivos distintos. También se propuso dejar main.py solamente como punto
+de entrada, agregar pruebas simples y mejorar los comentarios para explicar
+las decisiones importantes sin comentar cada línea.
+
+Decisión tomada:
 ACEPTADA.
-Se revisó que cada parte del código pudiera explicarse usando conceptos básicos vistos en la materia.
+
+Justificación:
+Se crearon datos.py, funciones.py, graficos.py, acciones.py, interfaz.py y pruebas.py.
+De esta forma cada módulo puede explicarse con una sola responsabilidad.
 
 
 CÓMO SE COMPROBÓ EL FUNCIONAMIENTO
 ==================================
 
-Se probaron las funciones principales de manera independiente:
+Se verificaron los siguientes casos:
 
-1. Lectura de datos desde JSON.
-2. Alta de un gasto.
-3. Modificación de un gasto.
-4. Eliminación de un gasto.
-5. Filtro por categoría.
-6. Cálculo de total, promedio y gasto mayor.
-7. Generación del gráfico.
+1. Agregar un gasto.
+2. Modificar un gasto.
+3. Eliminar un gasto.
+4. Filtrar por categoría.
+5. Calcular total, promedio y gasto mayor.
+6. Validar una fecha correcta.
+7. Detectar una fecha incorrecta.
+8. Cargar y guardar datos en JSON.
+9. Ejecutar la aplicación gráfica.
+10. Generar el gráfico de gastos por categoría.
 
-También se verificó que los archivos .py no tuvieran errores de sintaxis.
-
-La interfaz fue diseñada con controles básicos de Tkinter:
-Label, Entry, OptionMenu, Button y Listbox.
+Además se creó pruebas.py, que permite repetir las pruebas principales
+sin modificar el archivo datos.json.

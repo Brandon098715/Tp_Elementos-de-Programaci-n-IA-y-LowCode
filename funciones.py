@@ -1,29 +1,6 @@
-import json
+"""Funciones con la lógica principal de la aplicación."""
+
 from datetime import datetime
-
-import pandas as pd
-import matplotlib.pyplot as plt
-
-
-ARCHIVO_DATOS = "datos.json"
-
-
-def cargar_gastos() -> list:
-    """Lee los gastos guardados en datos.json."""
-    try:
-        with open(ARCHIVO_DATOS, "r", encoding="utf-8") as archivo:
-            gastos = json.load(archivo)
-            return gastos
-    except FileNotFoundError:
-        return []
-    except json.JSONDecodeError:
-        return []
-
-
-def guardar_gastos(gastos: list) -> None:
-    """Guarda la lista de gastos en datos.json."""
-    with open(ARCHIVO_DATOS, "w", encoding="utf-8") as archivo:
-        json.dump(gastos, archivo, indent=4, ensure_ascii=False)
 
 
 def validar_fecha(fecha: str) -> bool:
@@ -43,6 +20,8 @@ def agregar_gasto(
     monto: float,
 ) -> dict:
     """Crea un gasto nuevo y lo agrega a la lista."""
+
+    # Buscamos el ID más alto para crear uno nuevo sin repetirlo.
     nuevo_id = 1
 
     for gasto in gastos:
@@ -70,6 +49,7 @@ def modificar_gasto(
     monto: float,
 ) -> bool:
     """Busca un gasto por ID y modifica sus datos."""
+
     for gasto in gastos:
         if gasto["id"] == id_gasto:
             gasto["fecha"] = fecha
@@ -83,6 +63,7 @@ def modificar_gasto(
 
 def eliminar_gasto(gastos: list, id_gasto: int) -> bool:
     """Busca un gasto por ID y lo elimina."""
+
     for gasto in gastos:
         if gasto["id"] == id_gasto:
             gastos.remove(gasto)
@@ -93,6 +74,7 @@ def eliminar_gasto(gastos: list, id_gasto: int) -> bool:
 
 def filtrar_por_categoria(gastos: list, categoria: str) -> list:
     """Devuelve solamente los gastos de una categoría."""
+
     resultado = []
 
     for gasto in gastos:
@@ -104,6 +86,7 @@ def filtrar_por_categoria(gastos: list, categoria: str) -> list:
 
 def calcular_indicadores(gastos: list) -> tuple:
     """Calcula total gastado, promedio y gasto mayor."""
+
     if len(gastos) == 0:
         return 0, 0, 0
 
@@ -119,19 +102,3 @@ def calcular_indicadores(gastos: list) -> tuple:
     promedio = total / len(gastos)
 
     return total, promedio, mayor
-
-
-def crear_grafico(gastos: list) -> None:
-    """Crea un gráfico de barras con el total por categoría."""
-    datos = pd.DataFrame(gastos)
-    totales = datos.groupby("categoria")["monto"].sum()
-
-    totales.plot(kind="bar")
-
-    plt.title("Gastos por categoría")
-    plt.xlabel("Categoría")
-    plt.ylabel("Monto")
-    plt.tight_layout()
-
-    plt.savefig("grafico.png")
-    plt.show()

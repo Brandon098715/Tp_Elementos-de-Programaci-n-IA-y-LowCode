@@ -22,23 +22,9 @@
     },
     {
         "id": 4,
-        "fecha": "2026-09-27",
+        "fecha": "2026-01-01",
         "categoria": "Ocio",
-        "descripcion": "Cine",
-        "monto": 12000.0
-    },
-    {
-        "id": 5,
-        "fecha": "2026-09-29",
-        "categoria": "Comida",
-        "descripcion": "Almuerzo",
-        "monto": 9500.0
-    },
-    {
-        "id": 6,
-        "fecha": "2026-09-29",
-        "categoria": "Comida",
-        "descripcion": "Papa Fritas Nuevas",
-        "monto": 2000.0
+        "descripcion": "prueba",
+        "monto": 1000.0
     }
 ]

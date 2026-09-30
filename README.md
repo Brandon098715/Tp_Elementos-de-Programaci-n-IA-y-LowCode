@@ -1,139 +1,148 @@
 # TP1 - App de Gastos Personales en Python
 
-Aplicación sencilla para registrar y analizar gastos personales.
+Aplicación sencilla para registrar, consultar y analizar gastos personales.
 
 El proyecto fue realizado para el Trabajo Práctico 1 de **Elementos de Programación IA y Low Code**.
 
 ## Objetivo
 
-Permitir que una persona pueda:
+La aplicación permite:
 
 - Registrar gastos.
 - Ver los gastos guardados.
-- Modificar un gasto.
-- Eliminar un gasto.
+- Modificar gastos.
+- Eliminar gastos.
 - Filtrar por categoría.
-- Calcular tres indicadores:
-  - total gastado;
-  - promedio por gasto;
-  - gasto mayor.
+- Calcular tres indicadores: total gastado, promedio por gasto y gasto mayor.
 - Generar un gráfico de gastos por categoría.
 - Guardar y recuperar la información desde un archivo JSON.
 
-## Archivos
+## Organización del proyecto
 
-- `main.py`: interfaz gráfica y flujo principal.
-- `funciones.py`: funciones que trabajan con los datos.
-- `datos.json`: gastos guardados.
-- `analisis.ipynb`: análisis sencillo con pandas y Matplotlib.
-- `grafico.png`: ejemplo del gráfico generado.
-- `requirements.txt`: bibliotecas necesarias.
-- `prompts.txt`: registro del uso de inteligencia artificial.
+| Archivo | Responsabilidad |
+|---|---|
+| `main.py` | Inicia la aplicación. |
+| `interfaz.py` | Construye la ventana, los campos y los botones de Tkinter. |
+| `acciones.py` | Contiene las acciones que se ejecutan al usar los botones. |
+| `funciones.py` | Contiene la lógica para validar, agregar, modificar, eliminar, filtrar y calcular indicadores. |
+| `datos.py` | Lee y guarda `datos.json`. |
+| `graficos.py` | Usa pandas y Matplotlib para generar el gráfico. |
+| `pruebas.py` | Ejecuta pruebas simples de las funciones principales. |
+| `analisis.ipynb` | Analiza los datos con pandas y genera un gráfico. |
+| `datos.json` | Guarda los gastos. |
+| `grafico.png` | Gráfico generado a partir de los datos de ejemplo. |
+| `prompts.txt` | Documenta el uso de inteligencia artificial. |
+| `requirements.txt` | Bibliotecas externas necesarias. |
 
-## Tecnologías utilizadas
+## Estructura de los datos
 
-- Python
-- Tkinter
-- JSON
-- pandas
-- Matplotlib
+Cada gasto se representa con un diccionario:
 
-Tkinter viene incluido con la instalación normal de Python para Windows.
+```python
+{
+    "id": 1,
+    "fecha": "2026-09-20",
+    "categoria": "Comida",
+    "descripcion": "Supermercado",
+    "monto": 18500.0
+}
+```
+
+Todos los gastos se guardan dentro de una lista. Esa lista se guarda en `datos.json` para que la información no se pierda cuando se cierra el programa.
 
 ## Instalación
 
-1. Instalar Python.
-2. Abrir una terminal dentro de la carpeta del proyecto.
-3. Instalar las bibliotecas:
+Tkinter viene incluido con la instalación normal de Python para Windows.
 
-```bash
-pip install -r requirements.txt
+En Windows, abrir PowerShell dentro de la carpeta del proyecto y ejecutar:
+
+```powershell
+py -m pip install -r requirements.txt
 ```
 
 ## Ejecutar la aplicación
 
-Desde la carpeta del proyecto:
-
-```bash
-python main.py
+```powershell
+py main.py
 ```
 
-## Cómo usarla
+## Ejecutar las pruebas
 
-1. Escribir la fecha con formato `AAAA-MM-DD`.
-2. Elegir una categoría.
-3. Escribir una descripción.
-4. Escribir el monto.
-5. Presionar **Agregar gasto**.
+```powershell
+py pruebas.py
+```
 
-Para modificar:
+El resultado esperado es:
 
-1. Seleccionar un gasto de la lista.
-2. Presionar **Cargar seleccionado**.
-3. Cambiar los datos.
-4. Presionar **Modificar**.
+```text
+OK   - Agregar gasto
+OK   - Modificar gasto
+OK   - Filtrar por categoría
+OK   - Calcular indicadores
+OK   - Validar fecha correcta
+OK   - Detectar fecha incorrecta
+OK   - Eliminar gasto
 
-Para eliminar:
+Pruebas finalizadas.
+```
 
-1. Seleccionar un gasto.
-2. Presionar **Eliminar**.
+## Abrir el notebook
 
-Para filtrar:
+```powershell
+py -m jupyter notebook analisis.ipynb
+```
 
-1. Elegir una categoría en la parte inferior.
-2. Presionar **Filtrar**.
-3. Con **Mostrar todos** se quita el filtro.
+## Cómo se cumplen las consignas
 
-El botón **Ver gráfico** genera `grafico.png` y muestra un gráfico de barras.
+| Consigna | Dónde se demuestra |
+|---|---|
+| Variables y tipos de datos | En todos los módulos, especialmente en los datos de cada gasto. |
+| Condiciones | `if` en validaciones, filtros, búsqueda de IDs e interfaz. |
+| Estructuras repetitivas | `for` para recorrer la lista de gastos. |
+| Listas y diccionarios | La lista `gastos` contiene un diccionario por cada registro. |
+| Cuatro o más funciones propias | `funciones.py`, `datos.py`, `graficos.py`, `acciones.py` e `interfaz.py`. |
+| Anotaciones de tipo | Parámetros y retornos de las funciones. |
+| `try` y `except` | Validación de fecha, conversión del monto y lectura del JSON. |
+| Dos o más módulos `.py` | El proyecto está separado en varios módulos con responsabilidades distintas. |
+| JSON o CSV | `datos.py` lee y guarda `datos.json`. |
+| pandas | `graficos.py` y `analisis.ipynb`. |
+| Matplotlib | `graficos.py` y `analisis.ipynb`. |
+| Cargar o recuperar información | Los datos se recuperan desde `datos.json` al iniciar. |
+| Validar datos | Fecha, monto y campos obligatorios. |
+| Consultar, filtrar o modificar | La interfaz permite filtrar, modificar y eliminar. |
+| Tres indicadores | Total, promedio y gasto mayor. |
+| Visualización | Gráfico de barras por categoría. |
 
 ## Decisiones principales
 
-Se eligió una solución intencionalmente sencilla.
+Se eligió una solución intencionalmente sencilla para que todo el código pueda ser comprendido y explicado.
 
-- Los gastos se guardan como una **lista de diccionarios**.
-- Se utiliza **JSON** porque permite guardar esa estructura de manera directa.
-- `main.py` contiene la interfaz.
-- `funciones.py` contiene la lógica reutilizable.
-- Se utiliza **Tkinter** porque forma parte de Python y permite crear una interfaz sin agregar un framework web.
-- Se utilizaron funciones normales en lugar de clases para mantener el código fácil de explicar.
-- Se utiliza pandas solamente para organizar los datos del análisis y para agrupar los montos del gráfico.
-- Matplotlib genera el gráfico de barras.
+- Se usa **Tkinter** porque viene incluido con Python y permite crear una interfaz sin un framework web.
+- Se usa **JSON** porque guarda directamente listas y diccionarios.
+- Se separaron las responsabilidades en archivos pequeños.
+- `interfaz.py` construye la pantalla y `acciones.py` responde a los botones. Para mantener el código básico se usan variables simples de módulo en lugar de clases.
+- No se utilizaron clases ni una base de datos porque no eran necesarias para la consigna.
+- pandas se utiliza para organizar y agrupar datos.
+- Matplotlib se utiliza únicamente para generar el gráfico.
 
-## Contenidos de Python presentes
+## Pruebas y corrección
 
-El proyecto incluye:
+Las funciones principales se prueban en `pruebas.py` sin modificar `datos.json`.
 
-- Variables y distintos tipos de datos.
-- Condiciones `if`.
-- Repeticiones `for`.
-- Listas y diccionarios.
-- Funciones propias con anotaciones de tipo.
-- Manejo de errores con `try` y `except`.
-- Dos módulos `.py`.
-- Lectura y escritura de JSON.
-- pandas.
-- Matplotlib.
+Además se probaron manualmente:
 
-## Pruebas realizadas
+- carga inicial de datos;
+- alta de un gasto;
+- monto no numérico;
+- fecha incorrecta;
+- modificación;
+- eliminación;
+- filtro por categoría;
+- indicadores;
+- generación del gráfico.
 
-Se comprobaron los siguientes casos:
+## Uso de inteligencia artificial
 
-- Cargar los datos existentes desde `datos.json`.
-- Agregar un gasto válido.
-- Intentar ingresar un monto que no es un número.
-- Intentar ingresar una fecha con formato incorrecto.
-- Modificar un gasto existente.
-- Eliminar un gasto.
-- Filtrar por categoría.
-- Calcular total, promedio y gasto mayor.
-- Generar el gráfico por categoría.
+El uso de IA está documentado en `prompts.txt`.
 
-## Notebook
-
-Para abrir el análisis:
-
-```bash
-jupyter notebook analisis.ipynb
-```
-
-También puede abrirse desde Visual Studio Code si tiene soporte para notebooks.
+Se registraron los prompts utilizados, la respuesta recibida, la decisión tomada y la forma en que se comprobó el funcionamiento del código.
